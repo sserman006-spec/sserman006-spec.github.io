@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Serman Muthu Sundaresh B — N4MR3S — Scoreboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f5ef;
+    --panel:#ffffff;
+    --border:#e5e0d2;
+    --ink:#17160f;
+    --ink-dim:#6f6a5a;
+    --gold:#b6852b;
+    --gold-bg:#fbf1dd;
+    --misc:#c96a1f;
+    --misc-bg:#fbeadb;
+    --crypto:#6a4fd6;
+    --crypto-bg:#ece8fb;
+    --web:#1f74c9;
+    --web-bg:#e2edfa;
+    --edu:#268a5e;
+    --edu-bg:#e0f3ea;
+    --locked:#9a9587;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.6; font-size:15.5px;
+  }
+  .mono{font-family:'JetBrains Mono', monospace;}
+  .disp{font-family:'Space Grotesk', sans-serif;}
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+  a{color:inherit;}
+  .wrap{max-width:980px; margin:0 auto; padding:0 24px;}
+
+  /* HEADER / SCOREBOARD BAR */
+  header{
+    position:sticky; top:0; z-index:60; background:rgba(247,245,239,0.94);
+    backdrop-filter:blur(6px); border-bottom:2px solid var(--ink);
+  }
+  header::after{
+    content:""; display:block; height:5px; width:100%;
+    background:linear-gradient(90deg, var(--gold) 0 53.3%, var(--misc) 53.3% 77.3%, var(--edu) 77.3% 88%, var(--crypto) 88% 96%, var(--web) 96% 100%);
+  }
+  .head-inner{max-width:980px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:14px;}
+  .brand{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.05rem;}
+  .score-pill{
+    display:flex; align-items:center; gap:16px; font-family:'JetBrains Mono',monospace; font-size:0.82rem;
+    border:1.5px solid var(--ink); padding:6px 14px; background:var(--panel);
+  }
+  .score-pill b{font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:700;}
+  .filters{display:flex; gap:8px; flex-wrap:wrap;}
+  .chip{
+    font-family:'JetBrains Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em;
+    border:1.5px solid var(--border); background:var(--panel); color:var(--ink-dim);
+    padding:5px 11px; cursor:pointer; transition:all .15s;
+  }
+  .chip:hover{border-color:var(--ink); color:var(--ink);}
+  .chip.active{background:var(--gold); color:#fff; border-color:var(--gold);}
+  .chip[data-filter="gold"]{border-color:var(--gold); color:var(--gold);}
+  .chip[data-filter="misc"]{border-color:var(--misc); color:var(--misc);}
+  .chip[data-filter="crypto"]{border-color:var(--crypto); color:var(--crypto);}
+  .chip[data-filter="web"]{border-color:var(--web); color:var(--web);}
+  .chip[data-filter="edu"]{border-color:var(--edu); color:var(--edu);}
+  .chip.active[data-filter]{color:#fff;}
+  .chip.active[data-filter="gold"]{background:var(--gold);}
+  .chip.active[data-filter="misc"]{background:var(--misc);}
+  .chip.active[data-filter="crypto"]{background:var(--crypto);}
+  .chip.active[data-filter="web"]{background:var(--web);}
+  .chip.active[data-filter="edu"]{background:var(--edu);}
+
+  /* HERO */
+  .hero{padding:56px 0 40px;}
+  .kicker{font-family:'JetBrains Mono',monospace; font-size:0.76rem; text-transform:uppercase; letter-spacing:0.18em; color:var(--ink-dim); margin-bottom:10px;}
+  h1{font-family:'Space Grotesk',sans-serif; font-size:clamp(2rem,5.6vw,3.1rem); font-weight:700; letter-spacing:-0.01em; margin-bottom:14px;}
+  .tags{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+  .tag{font-family:'JetBrains Mono',monospace; font-size:0.72rem; text-transform:uppercase; padding:4px 10px; border:1.5px solid var(--ink); letter-spacing:0.04em;}
+  .tag.t-gold{border-color:var(--gold); color:var(--gold); background:var(--gold-bg);}
+  .tag.t-misc{border-color:var(--misc); color:var(--misc); background:var(--misc-bg);}
+  .tag.t-crypto{border-color:var(--crypto); color:var(--crypto); background:var(--crypto-bg);}
+  .bio{max-width:66ch; color:var(--ink-dim); font-size:0.97rem; margin-bottom:28px;}
+  .bio b{color:var(--ink); font-weight:600;}
+  .linkrow{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:34px;}
+  .linkrow a{font-family:'JetBrains Mono',monospace; font-size:0.8rem; text-decoration:none; border-bottom:1.5px solid var(--ink); padding-bottom:1px;}
+  .linkrow a:hover{color:var(--gold); border-color:var(--gold);}
+
+  /* DISTRIBUTION BAR — signature element */
+  .distro-label{font-family:'JetBrains Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-dim); margin-bottom:8px;}
+  .distro-bar{display:flex; height:26px; width:100%; border:1.5px solid var(--ink); overflow:hidden; margin-bottom:10px;}
+  .distro-bar span{height:100%; transition:filter .15s;}
+  .distro-bar span:hover{filter:brightness(0.85);}
+  .distro-legend{display:flex; gap:18px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:0.74rem; color:var(--ink-dim);}
+  .distro-legend .sw{display:inline-block; width:9px; height:9px; margin-right:6px; vertical-align:middle;}
+
+  /* CHALLENGE GRID */
+  .section-title{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem;
+    margin:52px 0 18px; padding-top:24px; border-top:2px solid var(--ink);
+  }
+  .grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:16px; perspective:1200px;}
+  .card{
+    border:1.5px solid var(--border); border-left-width:5px; background:var(--panel); padding:18px 18px 20px;
+    display:flex; flex-direction:column; gap:10px;
+    transition:opacity .6s ease, transform .35s cubic-bezier(.2,.8,.2,1), border-color .2s, box-shadow .25s;
+    transform-style:preserve-3d; position:relative; overflow:hidden; will-change:transform;
+  }
+  .card::after{
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .25s;
+    background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.55), transparent 55%);
+  }
+  .card:hover::after{opacity:1;}
+  .card:hover{box-shadow:10px 14px 26px rgba(23,22,15,0.16);}
+  .card.hidden{display:none;}
+  .card[data-cat="gold"]{border-left-color:var(--gold); background:var(--gold-bg);}
+  .card[data-cat="misc"]{border-left-color:var(--misc); background:var(--misc-bg);}
+  .card[data-cat="crypto"]{border-left-color:var(--crypto); background:var(--crypto-bg);}
+  .card[data-cat="web"]{border-left-color:var(--web); background:var(--web-bg);}
+  .card[data-cat="edu"]{border-left-color:var(--edu); background:var(--edu-bg);}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .cat-pill{font-family:'JetBrains Mono',monospace; font-size:0.66rem; text-transform:uppercase; letter-spacing:0.05em; padding:3px 8px; font-weight:700; color:#fff;}
+  .cat-pill.misc{background:var(--misc);}
+  .cat-pill.crypto{background:var(--crypto);}
+  .cat-pill.web{background:var(--web);}
+  .cat-pill.gold{background:var(--gold);}
+  .cat-pill.edu{background:var(--edu);}
+  .pts{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:0.9rem; white-space:nowrap;}
+  .card h3{font-family:'Space Grotesk',sans-serif; font-size:1.02rem; font-weight:600;}
+  .card p{color:var(--ink-dim); font-size:0.86rem; flex-grow:1;}
+  .card-bottom{display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono',monospace; font-size:0.72rem;}
+  .solved{color:var(--edu); font-weight:700;}
+  .inprog{color:#c25a1f; font-weight:700;}
+  .card a.ext{color:var(--ink); text-decoration:none; border-bottom:1px dashed var(--ink);}
+  .card a.ext:hover{color:var(--gold); border-color:var(--gold);}
+
+  /* CONTACT / FLAG SUBMIT */
+  .flagbox{
+    border:2px solid var(--ink); background:var(--gold-bg); padding:28px 26px; margin-top:20px;
+  }
+  .flagbox p{color:var(--ink-dim); font-size:0.88rem; margin-bottom:16px; max-width:56ch;}
+  .flag-form{display:flex; gap:0; flex-wrap:wrap;}
+  .flag-input{
+    font-family:'JetBrains Mono',monospace; font-size:0.88rem; padding:11px 14px; border:1.5px solid var(--ink);
+    background:var(--bg); color:var(--ink-dim); flex:1; min-width:200px;
+  }
+  .flag-btn{
+    font-family:'JetBrains Mono',monospace; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em;
+    padding:11px 20px; border:1.5px solid var(--gold); border-left:none; background:var(--gold); color:#fff;
+    cursor:pointer;
+  }
+  .flag-btn:hover{background:var(--ink); border-color:var(--ink);}
+  .toast{
+    font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--edu); margin-top:12px; opacity:0; transition:opacity .3s;
+  }
+  .toast.show{opacity:1;}
+  .comms{display:none; margin-top:20px; flex-direction:column; gap:10px;}
+  .comms.show{display:flex;}
+  .comms-row{display:flex; gap:12px; font-family:'JetBrains Mono',monospace; font-size:0.86rem;}
+  .comms-row .plat{width:88px; color:var(--ink-dim);}
+  .comms-row a{text-decoration:none; border-bottom:1.5px solid var(--ink);}
+  .comms-row a:hover{color:var(--gold); border-color:var(--gold);}
+
+  footer{padding:40px 0 60px; text-align:center; color:var(--ink-dim); font-family:'JetBrains Mono',monospace; font-size:0.76rem; border-top:2px solid var(--ink); margin-top:20px;}
+  footer a{color:var(--gold); text-decoration:none;}
+
+  ::selection{background:var(--ink); color:var(--bg);}
+  a:focus-visible, .chip:focus-visible, .flag-btn:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-inner">
+    <span class="brand">N4MR3S</span>
+    <div class="score-pill">
+      <span><b id="scoreCounter">0</b> PTS</span>
+      <span>13/14 SOLVED</span>
+    </div>
+    <div class="filters" role="group" aria-label="Filter by category">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="gold">Achievements</button>
+      <button class="chip" data-filter="misc">Projects</button>
+      <button class="chip" data-filter="crypto">Crypto</button>
+      <button class="chip" data-filter="web">Web</button>
+      <button class="chip" data-filter="edu">Training</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="kicker">field file — subject no. 254446 — scoreboard view</div>
+    <h1>Serman Muthu Sundaresh B</h1>
+    <div class="tags">
+      <span class="tag t-gold">CTF Operative</span>
+      <span class="tag t-crypto">SOC &amp; VAPT Aspirant</span>
+      <span class="tag t-misc">T3AM KNU11</span>
+    </div>
+    <p class="bio">
+      Third-year <b>B.E. CSE (Cyber Security)</b> student at PSNA College of Engineering &amp; Technology,
+      with a working foundation in <b>network security, web security, digital forensics and Linux</b>.
+      Active CTF competitor and team lead. Builds practical security tooling in Python and is currently
+      seeking <b>SOC Analyst, VAPT and Cybersecurity Internship</b> opportunities.
+    </p>
+    <div class="linkrow">
+      <a href="resume.pdf" target="_blank" rel="noopener">resume.pdf ↗</a>
+      <a href="https://www.instagram.com/s_e_r_m_a_n/" target="_blank" rel="noopener">instagram ↗</a>
+      <a href="https://in.linkedin.com/in/serman-muthu-sundaresh-b-9412b8329" target="_blank" rel="noopener">linkedin ↗</a>
+      <a href="https://ctftime.org/user/254446" target="_blank" rel="noopener">ctftime ↗</a>
+    </div>
+
+    <div class="distro-label">points earned by category</div>
+    <div class="distro-bar">
+      <span style="width:53.3%; background:var(--gold);" title="Achievements 2000pts"></span>
+      <span style="width:24%; background:var(--misc);" title="Projects 900pts"></span>
+      <span style="width:10.7%; background:var(--edu);" title="Training 400pts"></span>
+      <span style="width:8%; background:var(--crypto);" title="Crypto 300pts"></span>
+      <span style="width:4%; background:var(--web);" title="Web 150pts"></span>
+    </div>
+    <div class="distro-legend">
+      <span><i class="sw" style="background:var(--gold);"></i>achievements 53%</span>
+      <span><i class="sw" style="background:var(--misc);"></i>projects 24%</span>
+      <span><i class="sw" style="background:var(--edu);"></i>training 11%</span>
+      <span><i class="sw" style="background:var(--crypto);"></i>crypto 8%</span>
+      <span><i class="sw" style="background:var(--web);"></i>web 4%</span>
+    </div>
+  </section>
+
+  <h2 class="section-title"><span style="display:inline-block;width:10px;height:10px;background:var(--misc);margin-right:8px;vertical-align:middle;"></span>Profile &amp; Arsenal</h2>
+  <div class="grid">
+    <div class="card" data-cat="misc">
+      <div class="card-top"><span class="cat-pill misc">misc</span><span class="pts">100 pts</span></div>
+      <h3>whoami</h3>
+      <p>Cybersecurity undergraduate, CTF competitor, and tool-builder — recreational activity is competitive
+      flag capture, professional goal is a SOC/VAPT seat.</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span></div>
+    </div>
+    <div class="card" data-cat="misc">
+      <div class="card-top"><span class="cat-pill misc">misc</span><span class="pts">150 pts</span></div>
+      <h3>Arsenal</h3>
+      <p>Python, Bash, C++, Java, SQL · Kali Linux, Nmap, Wireshark, Burp Suite, Metasploit, Ghidra ·
+      network security, digital forensics, web security, cryptography, OSINT.</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span></div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span style="display:inline-block;width:10px;height:10px;background:var(--crypto);margin-right:8px;vertical-align:middle;"></span>Field Operations</h2>
+  <div class="grid">
+    <div class="card" data-cat="crypto">
+      <div class="card-top"><span class="cat-pill crypto">crypto</span><span class="pts">300 pts</span></div>
+      <h3>D1G UR P4SSWD</h3>
+      <p>Zero-dependency Python CLI. Checks breach exposure, scores password strength, and generates a
+      stronger one — pure standard library, no installs.</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span><a class="ext" href="https://github.com/sserman006-spec/d1g-ur-p4sswd" target="_blank" rel="noopener">source →</a></div>
+    </div>
+    <div class="card" data-cat="misc">
+      <div class="card-top"><span class="cat-pill misc">misc</span><span class="pts">400 pts</span></div>
+      <h3>ctf-solver</h3>
+      <p>Offline single-file Python toolkit: encoding/decoding, cryptography, steganography, forensics,
+      web exploitation payloads, reverse engineering. Installer + README included.</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span></div>
+    </div>
+    <div class="card" data-cat="misc">
+      <div class="card-top"><span class="cat-pill misc">misc</span><span class="pts">250 pts</span></div>
+      <h3>Keyboard Autocorrector</h3>
+      <p>System-wide PC keyboard autocorrector inspired by Google's autocorrect keyboard. Real-time typo
+      correction, exploring word-prediction and suggestion logic.</p>
+      <div class="card-bottom"><span class="inprog">… in progress</span></div>
+    </div>
+    <div class="card" data-cat="web">
+      <div class="card-top"><span class="cat-pill web">web</span><span class="pts">150 pts</span></div>
+      <h3>This Field File</h3>
+      <p>Personal portfolio &amp; blog built from scratch — HTML, CSS, JS — mobile nav, scroll-spy and
+      scroll-reveal, now reskinned as a live scoreboard.</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span></div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span style="display:inline-block;width:10px;height:10px;background:var(--gold);margin-right:8px;vertical-align:middle;"></span>Achievements</h2>
+  <div class="grid">
+    <div class="card" data-cat="gold">
+      <div class="card-top"><span class="cat-pill gold">scoreboard</span><span class="pts">500 pts</span></div>
+      <h3>2nd Place — PECCTF</h3>
+      <p>Competed with Team Knull, placed 2nd at the CTF hosted at Panimalar Engineering College.</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span><a class="ext" href="https://www.linkedin.com/posts/team-knull-ctf-44525b37a_secured-2nd-place-at-panimalar-engineering-ugcPost-7443580170315128832-wxQT" target="_blank" rel="noopener">record →</a></div>
+    </div>
+    <div class="card" data-cat="gold">
+      <div class="card-top"><span class="cat-pill gold">scoreboard</span><span class="pts">450 pts</span></div>
+      <h3>2nd Place — UNI6 CTF</h3>
+      <p>Placed 2nd in the UNI6 Capture The Flag competition.</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span></div>
+    </div>
+    <div class="card" data-cat="gold">
+      <div class="card-top"><span class="cat-pill gold">scoreboard</span><span class="pts">400 pts</span></div>
+      <h3>CTF Team Lead — T3AM KNU11</h3>
+      <p>Leading a team of 3rd-year students in cybersecurity and CTF activities.</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span></div>
+    </div>
+    <div class="card" data-cat="gold">
+      <div class="card-top"><span class="cat-pill gold">scoreboard</span><span class="pts">350 pts</span></div>
+      <h3>T3AM KNU11 — CTF</h3>
+      <p>Represented T3AM KNU11 in a cybersecurity CTF, chasing flags alongside teammates.</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span><a class="ext" href="https://www.linkedin.com/posts/karthikeyan-s-264a25339_cybersecurity-ctf-teamflagsters-ugcPost-7387072675182960642-9yLU" target="_blank" rel="noopener">record →</a></div>
+    </div>
+    <div class="card" data-cat="gold">
+      <div class="card-top"><span class="cat-pill gold">scoreboard</span><span class="pts">300 pts</span></div>
+      <h3>5th Place — TOM CTF</h3>
+      <p>Placed 5th in the TOM Capture The Flag competition.</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span></div>
+    </div>
+  </div>
+  <a class="linkrow" style="display:inline-block; margin-top:6px;" href="https://ctftime.org/user/254446" target="_blank" rel="noopener">full activity log &amp; ratings on CTFtime →</a>
+
+  <h2 class="section-title"><span style="display:inline-block;width:10px;height:10px;background:var(--edu);margin-right:8px;vertical-align:middle;"></span>Training Record</h2>
+  <div class="grid">
+    <div class="card" data-cat="edu">
+      <div class="card-top"><span class="cat-pill edu">edu</span><span class="pts">200 pts</span></div>
+      <h3>PSNA CEQ — B.E. CSE (Cyber Security)</h3>
+      <p>CGPA 7.96/10 · Class XII: 80% · Class X: 78%</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span></div>
+    </div>
+    <div class="card" data-cat="edu">
+      <div class="card-top"><span class="cat-pill edu">edu</span><span class="pts">150 pts</span></div>
+      <h3>Certifications</h3>
+      <p>Google AI Essentials · Google Prompting Essentials · IBM Introduction to Data Analytics ·
+      IBM Excel Basics for Data Analysis</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span></div>
+    </div>
+    <div class="card" data-cat="edu">
+      <div class="card-top"><span class="cat-pill edu">edu</span><span class="pts">50 pts</span></div>
+      <h3>Languages</h3>
+      <p>English · Tamil</p>
+      <div class="card-bottom"><span class="solved">✔ solved</span></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Debrief</h2>
+  <div class="flagbox">
+    <p>Comms are encrypted until unlocked. This box doesn't check anything real — hit submit to reveal the
+    channels below.</p>
+    <div class="flag-form">
+      <input class="flag-input" type="text" placeholder="flag{...}" aria-label="Flag input (decorative)">
+      <button class="flag-btn" id="submitFlag">Submit</button>
+    </div>
+    <div class="toast" id="flagToast">✔ Access granted — comms unsealed.</div>
+    <div class="comms" id="comms">
+      <div class="comms-row"><span class="plat">instagram</span><a href="https://www.instagram.com/s_e_r_m_a_n/" target="_blank" rel="noopener">@s_e_r_m_a_n</a></div>
+      <div class="comms-row"><span class="plat">linkedin</span><a href="https://in.linkedin.com/in/serman-muthu-sundaresh-b-9412b8329" target="_blank" rel="noopener">Serman Muthu Sundaresh B</a></div>
+      <div class="comms-row"><span class="plat">ctftime</span><a href="https://ctftime.org/user/254446" target="_blank" rel="noopener">N4MR3S — #254446</a></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  — EOF — built by Serman Muthu Sundaresh B — N4MR3S. still collecting flags.
+</footer>
+
+<script>
+  // filter chips
+  var chips = document.querySelectorAll('.chip');
+  var cards = document.querySelectorAll('.card');
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.classList.remove('active'); });
+      chip.classList.add('active');
+      var f = chip.getAttribute('data-filter');
+      cards.forEach(function(card){
+        if(f === 'all' || card.getAttribute('data-cat') === f){
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+
+  // 3D reveal + tilt
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canTilt = !reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  cards.forEach(function(card){
+    if(!reduceMotion){
+      card.style.opacity = 0;
+      card.style.transform = 'perspective(800px) rotateX(-20deg) translateY(28px)';
+    }
+  });
+  var cardIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.style.opacity = '';
+        entry.target.style.transform = '';
+        cardIO.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.15});
+  cards.forEach(function(card){ cardIO.observe(card); });
+
+  if(canTilt){
+    cards.forEach(function(card){
+      card.addEventListener('pointermove', function(e){
+        var r = card.getBoundingClientRect();
+        var x = e.clientX - r.left, y = e.clientY - r.top;
+        var cx = x / r.width - 0.5, cy = y / r.height - 0.5;
+        card.style.transform = 'perspective(800px) rotateX(' + (-cy * 12) + 'deg) rotateY(' + (cx * 12) + 'deg) translateY(-4px) scale(1.02)';
+        card.style.setProperty('--mx', (x / r.width * 100) + '%');
+        card.style.setProperty('--my', (y / r.height * 100) + '%');
+      });
+      card.addEventListener('pointerleave', function(){
+        card.style.transform = '';
+      });
+    });
+  }
+
+  // flag submit reveal
+  document.getElementById('submitFlag').addEventListener('click', function(){
+    document.getElementById('flagToast').classList.add('show');
+    document.getElementById('comms').classList.add('show');
+  });
+
+  // score count-up
+  var target = 3500;
+  var el = document.getElementById('scoreCounter');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){
+    el.textContent = target.toLocaleString();
+  } else {
+    var start = null, duration = 1100;
+    function step(ts){
+      if(!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      el.textContent = Math.floor(progress * target).toLocaleString();
+      if(progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+</script>
+
+</body>
+</html>
